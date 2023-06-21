@@ -4,6 +4,12 @@ author: "msagastya"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+## Synopsis
+Storms and other severe weather events can cause both public health and economic problems for communities and municipalities. Many severe events can result in fatalities, injuries, and property damage, and preventing such outcomes to the extent possible is a key concern.
+
+This project involves exploring the U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States, including when and where they occur, as well as estimates of any fatalities, injuries, and property damage.
+
+The basic goal of this assignment is to explore the NOAA Storm Database and answer some basic questions about severe weather events. You must use the database to answer the questions below and show the code for your entire analysis. Your analysis can consist of tables, figures, or other summaries. You may use any R package you want to support your analysis.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -19,7 +25,7 @@ library(dplyr)
 library(reshape2)
 ```
 
-# Code for reading in the dataset and/or processing the data
+## Data Processing
 
 ```{r}
 dataset <- read.csv(bzfile("repdata_data_StormData.csv.bz2"))
@@ -28,13 +34,13 @@ str(dataset)
 names(dataset)
 ```
 
-#1) Across the United States, which types of events (as indicated in the EVTYPE #variable) are most harmful with respect to population health?
 
-#for Events we have to compare with 2 health problems i.e injuries and fatalities
+### 1) Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 
-#We have to aggregate both one by one the compare
+For Events we have to compare with 2 health problems i.e injuries and fatalities.  
+We have to aggregate both one by one the compare
 
-#a) aggregating EVTYPE wrt injuries
+### a) aggregating EVTYPE wrt injuries
 
 ```{r}
 total_injuries <- aggregate(INJURIES~EVTYPE, dataset, sum)
@@ -43,7 +49,7 @@ total_injuries <- total_injuries[1:20, ]
 total_injuries
 ```
 
-#b) aggregating EVTYPE wrt fatalities
+### b) aggregating EVTYPE wrt fatalities
 
 ```{r}
 total_fatalities <- aggregate(FATALITIES~EVTYPE,dataset, sum)
@@ -52,16 +58,16 @@ total_fatalities <- total_fatalities[1:20, ]
 total_fatalities
 ```
 
-#c) ploting
+### c) ploting
 
 ```{r}
 par(mfrow = c(1, 2), mar = c(15, 4, 3, 2), mgp = c(3, 1, 0), cex = 0.8)
 barplot(total_fatalities$FATALITIES, las = 3, names.arg = total_fatalities$EVTYPE, main = "Weather Events With\n The Top 10 Highest Fatalities", ylab = "Number of Fatalities", col = total_fatalities$FATALITIES)
 ```
 
-#OR ##########Creating double bar graphs
+## Creating double bar graphs
 
-#d) merging both
+### d) merging both
 
 ```{r}
 totals<- merge(total_fatalities, total_injuries, by.x = "EVTYPE", by.y = "EVTYPE")
@@ -73,7 +79,7 @@ tail(bad_stuff, 5)
 
 ```
 
-#e) ploting
+### e) ploting
 
 ```{r}
 # Create chart
@@ -95,12 +101,13 @@ healthChart
 
 ```
 
-#2. Across the United States, which types of events have the greatest economic #consequences?
+## 2. Across the United States, which types of events have the greatest economic consequences?
 
-# we have property Damage and crop damage
+We have property Damage and crop damage
+
 ## Results
 
-#a) Aggregate Data for Property Damage
+### a) Aggregate Data for Property Damage
 
 ```{r}
 propdmg <- aggregate(PROPDMG ~ EVTYPE, data = dataset, FUN = sum)
@@ -110,7 +117,7 @@ propdmgMax <- propdmg[1:10, ]
 print(propdmgMax)
 ```
 
-#b) Aggregate Data for Crop Damage
+### b) Aggregate Data for Crop Damage
 
 ```{r}
 cropdmg <- aggregate(CROPDMG ~ EVTYPE, data = dataset, FUN = sum)
@@ -120,7 +127,7 @@ cropdmgMax <- cropdmg[1:10, ]
 print(cropdmgMax)
 ```
 
-#c)ploting
+### c)ploting
 
 ```{r}
 par(mfrow = c(1, 2), mar = c(15, 4, 3, 2), mgp = c(3, 1, 0), cex = 0.8)
@@ -134,10 +141,9 @@ barplot(cropdmgMax$CROPDMG, las = 3, names.arg = cropdmgMax$EVTYPE,
         ylab = "Number of Injuries", col = cropdmgMax$CROPDMG)
 
 ```
+## MAKING DOUBLE BAR GRAPH
 
-# MAKING DOUBLE BAR GRAPH
-
-#d)merging both
+### d)merging both
 
 ```{r}
 totalDamage<- merge(propdmgMax,cropdmgMax,by.x = "EVTYPE", by.y = "EVTYPE")
@@ -149,7 +155,7 @@ head(top_10_damages, 5)
 
 ```
 
-#e)ploting
+### e)ploting
 
 ```{r}
 # Create chart
@@ -171,9 +177,9 @@ DamageChart
 
 ```
 
-# MAKING TRIPLE BAR GRAPH
+## MAKING TRIPLE BAR GRAPH
 
-#f)merging both and melting
+### f)merging both and melting
 
 ```{r}
 #merging both
@@ -186,7 +192,7 @@ top_10_damages <- melt(totalDamage, id.vars="EVTYPE", variable.name = "Damage_Ty
 tail(top_10_damages, 5)
 ```
 
-#g)ploting
+### g)ploting
 
 ```{r}
 # Create chart
